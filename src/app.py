@@ -25,7 +25,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/member', methods=['GET'])
+@app.route('/members', methods=['GET'])
 def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
@@ -34,16 +34,16 @@ def handle_hello():
     }
     if members is None:
         return "The family does not exist yet", 400
-    return jsonify(response_body), 200
+    return members, 200
 
 #Getting the requested family member
-@app.route('/member/<int:member_key>', methods=['GET'])
-def get_family_member(member_key):
-    found_member = jackson_family.get_member(member_key)
+@app.route('/member/<int:id>', methods=['GET'])
+def get_family_member(id):
+    found_member = jackson_family.get_member(id)
     if (found_member == -1):
         return "That is not a member of the family", 400
     json_member = jsonify(found_member)
-    return json_member, 200
+    return found_member, 200
 
 
 #Adding members to the family
@@ -55,7 +55,7 @@ def adding_family_member():
     if 'first_name' not in request_body:
         return "Please add a first name", 400
     if 'age' not in request_body:
-        return "Please add an age", 400
+        return "Please add a valid age", 400
     if 'lucky_numbers' not in request_body:
         return "Please add their lucky numbers", 400
     family_members = jackson_family.add_member(request_body)
@@ -63,12 +63,12 @@ def adding_family_member():
     return json_family, 200
 
 #Creation of the deletion method
-@app.route('/member/<int:member_key>', methods = ['DELETE'])
-def deleting_family_member(member_key):
+@app.route('/member/<int:id>', methods = ['DELETE'])
+def deleting_family_member(id):
     response_body = {
         "done": True
     }
-    deletion_result = jackson_family.delete_member(member_key)
+    deletion_result = jackson_family.delete_member(id)
     if deletion_result == -1:
         return "This member does not exist", 400
     return jsonify(response_body), 200
