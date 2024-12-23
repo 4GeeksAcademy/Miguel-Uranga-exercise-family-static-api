@@ -32,8 +32,8 @@ def handle_hello():
     response_body = {
         "family": members
     }
-
-
+    if members is None:
+        return "The family does not exist yet", 400
     return jsonify(response_body), 200
 
 #Getting the requested family member
