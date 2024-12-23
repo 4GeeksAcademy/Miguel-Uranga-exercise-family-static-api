@@ -35,7 +35,7 @@ def handle_hello():
         }
         if members is None:
             return "The family does not exist yet", 400
-        return members, 200
+        return jsonify(members), 200
     except Exception as error:
         return jsonify({"Error: str(error)"}), 500
 
@@ -46,8 +46,7 @@ def get_family_member(id):
         found_member = jackson_family.get_member(id)
         if (found_member == -1):
             return "That is not a member of the family", 400
-        json_member = jsonify(found_member)
-        return found_member, 200
+        return jsonify(found_member), 200
     except Exception as error:
         return jsonify({"Error: str(error)"}), 500
 
@@ -66,8 +65,8 @@ def adding_family_member():
         if 'lucky_numbers' not in request_body:
             return "Please add their lucky numbers", 400
         family_members = jackson_family.add_member(request_body)
-        json_family = jsonify(family_members)
-        return json_family, 200
+        #json_family = jsonify(family_members)
+        return jsonify(family_members), 200
     except Exception as error:
         return jsonify({"Error: str(error)"}), 500
 
