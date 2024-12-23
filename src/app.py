@@ -37,17 +37,42 @@ def handle_hello():
     return jsonify(response_body), 200
 
 #Getting the requested family member
-@app.route('/members/<int:member_key>', methods=['GET'])
+@app.route('/member/<int:member_key>', methods=['GET'])
 def get_family_member(member_key):
     found_member = jackson_family.get_member(member_key)
+    if (found_member == -1):
+        return "That is not a member of the family", 400
     json_member = jsonify(found_member)
-    return json_member
+    return json_member, 200
 
 
 #Adding members to the family
 @app.route('/member', methods=['POST'])
 def adding_family_member():
-    return None
+    request_body = request.get_json()
+    if request_body is None:
+        return "Body cannot be null", 400
+    if 'first_name' not in request_body:
+        return "Please add a first name", 400
+    if 'age' not in request_body:
+        return "Please add an age", 400
+    if 'lucky_numbers' not in request_body:
+        return "Please add their lucky numbers", 400
+    family_members = jackson_family.add_member(request_body)
+    json_family = jsonify(family_members)
+    return json_family, 200
+
+#Creation of the deletion method
+@app.route('/member/<int:member_key>', methods = ['DELETE'])
+def deleting_family_member(member_key):
+    response_body = {
+        "done": True
+    }
+    deletion_result = jackson_family.delete_member(member_key)
+    if deletion_result == -1:
+        return "This member does not exist", 400
+    return jsonify(response_body), 200
+
 
 
 # this only runs if `$ python src/app.py` is executed
